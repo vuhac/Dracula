@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dracula Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dracBg: '#282a36',
+                        dracCurrent: '#44475a',
+                        dracFg: '#f8f8f2',
+                        dracComment: '#6272a4',
+                        dracCyan: '#8be9fd',
+                        dracGreen: '#50fa7b',
+                        dracOrange: '#ffb86c',
+                        dracPink: '#ff79c6',
+                        dracPurple: '#bd93f9',
+                        dracRed: '#ff5555',
+                        dracYellow: '#f1fa8c'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #282a36; }
+        ::-webkit-scrollbar-thumb { background: #44475a; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-dracBg text-dracFg flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-dracCurrent flex flex-col justify-between border-r border-dracComment/20">
+        <div>
+            <div class="p-6 flex items-center gap-3 border-b border-dracBg">
+                <div class="w-4 h-4 rounded-full bg-dracPink animate-pulse"></div>
+                <span class="font-bold text-xl tracking-wider text-dracPurple">DRACULA // OS</span>
+            </div>
+            
+            <nav class="p-4 space-y-2">
+                <a href="#overview" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-dracBg text-dracPink font-medium border-l-4 border-dracPink transition">
+                    <span>📊</span> Overview
+                </a>
+                <a href="#api-manager" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-dracBg/50 text-dracCyan transition">
+                    <span>⚡</span> API Manager
+                </a>
+                <a href="#mail-manager" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-dracBg/50 text-dracYellow transition">
+                    <span>✉️</span> Mail Manager
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-dracBg/50 text-dracComment transition">
+                    <span>⚙️</span> Settings
+                </a>
+            </nav>
+        </div>
+        
+        <div class="p-4 bg-dracBg/40 text-xs text-dracComment space-y-1 border-t border-dracBg">
+            <div class="flex justify-between">
+                <span>GPU (RTX A4000):</span>
+                <span class="text-dracGreen">42°C</span>
+            </div>
+            <div class="flex justify-between">
+                <span>VPS Server:</span>
+                <span class="text-dracCyan">Online</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        
+        <header class="h-16 bg-dracBg flex items-center justify-between px-8 border-b border-dracCurrent">
+            <div class="flex items-center gap-2">
+                <span class="text-dracComment">Console:</span>
+                <span class="text-xs font-mono bg-dracCurrent px-2 py-1 rounded text-dracOrange">~ guest@dracula-node-v1</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm bg-dracCurrent px-3 py-1 rounded-full text-dracGreen font-mono">Production Mode</span>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-8">
+            
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 bg-dracCurrent rounded-xl border border-dracComment/10">
+                    <p class="text-xs font-mono text-dracComment uppercase tracking-wider">Total Endpoints</p>
+                    <p class="text-3xl font-bold text-dracCyan mt-2"><%= apis.length %></p>
+                </div>
+                <div class="p-6 bg-dracCurrent rounded-xl border border-dracComment/10">
+                    <p class="text-xs font-mono text-dracComment uppercase tracking-wider">Active Mail Queues</p>
+                    <p class="text-3xl font-bold text-dracYellow mt-2"><%= mails.filter(m => m.status === 'Unread').length %> New</p>
+                </div>
+                <div class="p-6 bg-dracCurrent rounded-xl border border-dracComment/10">
+                    <p class="text-xs font-mono text-dracComment uppercase tracking-wider">System Health</p>
+                    <p class="text-3xl font-bold text-dracGreen mt-2">98.4%</p>
+                </div>
+            </section>
+
+            <section id="api-manager" class="bg-dracCurrent rounded-xl border border-dracComment/10 overflow-hidden">
+                <div class="p-6 bg-dracBg/30 flex justify-between items-center border-b border-dracBg">
+                    <h2 class="text-lg font-semibold text-dracCyan flex items-center gap-2">
+                        <span>⚡</span> API Manager Router
+                    </h2>
+                    <button class="bg-dracPurple hover:bg-dracPurple/80 text-dracBg px-4 py-1.5 rounded-lg text-sm font-bold tracking-wide transition">
+                        + Deploy Route
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-dracBg text-xs font-mono text-dracComment uppercase">
+                                <th class="p-4">Route Name</th>
+                                <th class="p-4">Endpoint</th>
+                                <th class="p-4">Method</th>
+                                <th class="p-4">Latency</th>
+                                <th class="p-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-dracBg/50 text-sm font-mono">
+                            <% apis.forEach(api => { %>
+                                <tr class="hover:bg-dracBg/20 transition">
+                                    <td class="p-4 text-dracFg font-sans font-medium"><%= api.name %></td>
+                                    <td class="p-4 text-dracComment"><%= api.endpoint %></td>
+                                    <td class="p-4">
+                                        <span class="px-2 py-0.5 rounded text-xs font-bold 
+                                            <%= api.method === 'POST' ? 'bg-dracGreen/20 text-dracGreen' : 'bg-dracCyan/20 text-dracCyan' %>">
+                                            <%= api.method %>
+                                        </span>
+                                    </td>
+                                    <td class="p-4 text-dracOrange"><%= api.responseTime %></td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center gap-1.5">
+                                            <span class="w-2 h-2 rounded-full 
+                                                <%= api.status === 'Active' ? 'bg-dracGreen' : api.status === 'Warning' ? 'bg-dracYellow' : 'bg-dracRed' %>">
+                                            </span>
+                                            <span class="text-xs"><%= api.status %></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="mail-manager" class="bg-dracCurrent rounded-xl border border-dracComment/10 overflow-hidden">
+                <div class="p-6 bg-dracBg/30 flex justify-between items-center border-b border-dracBg">
+                    <h2 class="text-lg font-semibold text-dracYellow flex items-center gap-2">
+                        <span>✉️</span> Mail Webhook Manager
+                    </h2>
+                    <span class="text-xs font-mono bg-dracBg px-3 py-1 rounded text-dracComment">SMTP Port: 587</span>
+                </div>
+                <div class="p-4 divide-y divide-dracBg/60">
+                    <% mails.forEach(mail => { %>
+                        <div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-dracBg/20 rounded-lg transition">
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded-full bg-dracBg flex items-center justify-center text-sm">
+                                    <%= mail.status === 'Unread' ? '📥' : '📨' %>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold <%= mail.status === 'Unread' ? 'text-dracPink' : 'text-dracFg' %>">
+                                        <%= mail.subject %>
+                                    </p>
+                                    <p class="text-xs text-dracComment mt-0.5"><%= mail.sender %></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-mono self-end md:self-center">
+                                <span class="text-dracComment"><%= mail.time %></span>
+                                <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold 
+                                    <%= mail.status === 'Unread' ? 'bg-dracPink/20 text-dracPink' : 'bg-dracComment/20 text-dracComment' %>">
+                                    <%= mail.status %>
+                                </span>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+</body>
+</html>
+                                  
